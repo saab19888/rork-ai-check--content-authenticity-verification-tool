@@ -1,7 +1,7 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth, initializeAuth } from 'firebase/auth';
+import { getAuth } from 'firebase/auth';
+import { getAnalytics } from 'firebase/analytics';
 import { Platform } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCNgY6TSMIpS1SZ35SfiXvAX7QN9nD-mdQ",
@@ -15,13 +15,14 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-let auth;
+// Initialize Firebase Auth
+const auth = getAuth(app);
+
+// Initialize Analytics (only on web platform)
+let analytics;
 if (Platform.OS === 'web') {
-  auth = getAuth(app);
-} else {
-  // For React Native, we'll use the default persistence
-  auth = getAuth(app);
+  analytics = getAnalytics(app);
 }
 
-export { auth };
+export { auth, analytics };
 export default app;
