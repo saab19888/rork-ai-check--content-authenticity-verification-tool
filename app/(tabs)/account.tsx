@@ -20,11 +20,13 @@ import {
 import { colors } from "@/constants/colors";
 import GradientButton from "@/components/GradientButton";
 import ChatGPTStatus from "@/components/ChatGPTStatus";
+import { useAuth } from "@/hooks/useAuthStore";
 import { useUserStore } from "@/hooks/useUserStore";
 
 export default function AccountScreen() {
   const router = useRouter();
-  const { user, logout } = useUserStore();
+  const { user: authUser, signOut } = useAuth();
+  const { user: profileUser } = useUserStore();
   const [notificationsEnabled, setNotificationsEnabled] = useState(true);
 
   const handleLogout = async () => {
@@ -37,9 +39,7 @@ export default function AccountScreen() {
           text: "Logout", 
           style: "destructive",
           onPress: async () => {
-            await logout();
-            // In a real app, we might navigate to a login screen
-            Alert.alert("Logged Out", "You have been logged out successfully.");
+            await signOut();
           }
         }
       ]
@@ -76,17 +76,20 @@ export default function AccountScreen() {
       style={styles.container}
       contentContainerStyle={styles.contentContainer}
     >
-      {user ? (
+      {authUser && profileUser ? (
         <>
           <View style={styles.profileSection}>
             <View style={styles.profileInitials}>
               <Text style={styles.initialsText}>
-                {user.name.split(" ").map(n => n[0]).join("")}
+                {(authUser.displayName || authUser.email || 'U').split(" ").map(n => n[0]).join("")}
               </Text>
             </View>
             <View style={styles.profileInfo}>
-              <Text style={styles.profileName}>{user.name}</Text>
-              <Text style={styles.profileEmail}>{user.email}</Text>
+              <Text style={styles.profileName}>{authUser.displayName || 'User'}</Text>
+              <Text style={styles.profileEmail}>{authUser.email}</Text>
+              {!authUser.emailVerified && (
+                <Text style={styles.unverifiedText}>Email not verified</Text>
+              )}
             </View>
           </View>
 
@@ -97,17 +100,17 @@ export default function AccountScreen() {
             </View>
             <View style={styles.subscriptionDetails}>
               <Text style={styles.planName}>
-                {getPlanName(user.subscription.plan)}
+                {getPlanName(profileUser.subscription.plan)}
               </Text>
               <Text style={styles.expiryDate}>
-                Expires: {formatDate(user.subscription.expiresAt)}
+                Expires: {formatDate(profileUser.subscription.expiresAt)}
               </Text>
               <View style={styles.checksContainer}>
                 <Text style={styles.checksLabel}>Checks Remaining:</Text>
                 <Text style={styles.checksValue}>
-                  {user.subscription.checksRemaining < 0 
+                  {profileUser.subscription.checksRemaining < 0 
                     ? "Unlimited" 
-                    : user.subscription.checksRemaining}
+                    : profileUser.subscription.checksRemaining}
                 </Text>
               </View>
             </View>
@@ -171,19 +174,10 @@ export default function AccountScreen() {
         </>
       ) : (
         <View style={styles.signInContainer}>
-          <Text style={styles.signInTitle}>Sign In Required</Text>
+          <Text style={styles.signInTitle}>Loading...</Text>
           <Text style={styles.signInText}>
-            Please sign in to access your account and subscription details.
+            Please wait while we load your account information.
           </Text>
-          <GradientButton
-            title="Sign In"
-            onPress={() => {
-              // In a real app, navigate to login screen
-              // For demo, we'll simulate login with mock data
-              useUserStore.getState().login("demo@example.com", "password");
-            }}
-            style={styles.signInButton}
-          />
         </View>
       )}
     </ScrollView>
@@ -230,6 +224,11 @@ const styles = StyleSheet.create({
   profileEmail: {
     fontSize: 14,
     color: colors.textSecondary,
+  },
+  unverifiedText: {
+    fontSize: 12,
+    color: colors.error,
+    marginTop: 2,
   },
   subscriptionCard: {
     backgroundColor: colors.card,
