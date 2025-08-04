@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 import { Stack, router } from 'expo-router';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { Mail, RefreshCw } from 'lucide-react-native';
+import { Mail } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 import { useAuth } from '@/hooks/useAuthStore';
-import { GradientButton } from '@/components/GradientButton';
+import GradientButton from '@/components/GradientButton';
 
 export default function VerifyEmailScreen() {
   const [resendLoading, setResendLoading] = useState(false);
@@ -82,7 +82,6 @@ export default function VerifyEmailScreen() {
             onPress={handleRefresh}
             style={styles.refreshButton}
             testID="refresh-button"
-            icon={<RefreshCw size={20} color="white" />}
           />
 
           <TouchableOpacity

@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Mail, ArrowLeft } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 import { useAuth } from '@/hooks/useAuthStore';
-import { GradientButton } from '@/components/GradientButton';
+import GradientButton from '@/components/GradientButton';
 
 export default function ForgotPasswordScreen() {
   const [email, setEmail] = useState('');

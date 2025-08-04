@@ -5,6 +5,7 @@ export const colors = {
   secondary: "#6366f1", // Indigo
   background: "#ffffff",
   card: "#f8fafc",
+  surface: "#f1f5f9",
   text: "#0f172a",
   textSecondary: "#64748b",
   border: "#e2e8f0",

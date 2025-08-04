@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { Eye, EyeOff, Mail, Lock, User } from 'lucide-react-native';
 import { colors } from '@/constants/colors';
 import { useAuth } from '@/hooks/useAuthStore';
-import { GradientButton } from '@/components/GradientButton';
+import GradientButton from '@/components/GradientButton';
 
 export default function RegisterScreen() {
   const [name, setName] = useState('');

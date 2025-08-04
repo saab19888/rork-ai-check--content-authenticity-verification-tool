@@ -10,6 +10,7 @@ import {
   updateProfile
 } from 'firebase/auth';
 import { auth } from '@/config/firebase';
+import type { Auth } from 'firebase/auth';
 import createContextHook from '@nkzw/create-context-hook';
 
 interface AuthState {
@@ -35,7 +36,7 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
   });
 
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth as Auth, (user) => {
       console.log('Auth state changed:', user?.email);
       setState(prev => ({
         ...prev,
@@ -63,7 +64,7 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     try {
       setLoading(true);
       clearError();
-      await signInWithEmailAndPassword(auth, email, password);
+      await signInWithEmailAndPassword(auth as Auth, email, password);
       console.log('Sign in successful');
     } catch (error: any) {
       console.error('Sign in error:', error);
@@ -77,7 +78,7 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     try {
       setLoading(true);
       clearError();
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const userCredential = await createUserWithEmailAndPassword(auth as Auth, email, password);
       
       // Update profile with display name
       await updateProfile(userCredential.user, {
@@ -99,7 +100,7 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     try {
       setLoading(true);
       clearError();
-      await signOut(auth);
+      await signOut(auth as Auth);
       console.log('Sign out successful');
     } catch (error: any) {
       console.error('Sign out error:', error);
@@ -113,7 +114,7 @@ export const [AuthProvider, useAuth] = createContextHook(() => {
     try {
       setLoading(true);
       clearError();
-      await sendPasswordResetEmail(auth, email);
+      await sendPasswordResetEmail(auth as Auth, email);
       console.log('Password reset email sent');
     } catch (error: any) {
       console.error('Password reset error:', error);
